@@ -37,10 +37,30 @@ def extract_command(response_text):
     return response_text.splitlines()[0].strip()
 
 def get_command_from_ai(prompt):
-    system_message = (
-        "You are an expert Linux assistant. Given a natural language instruction, return only one shell command, and then one short explanation.\n"
-        "Example:\nInput: delete all mp3 files from downloads\nOutput:\nrm ~/Downloads/*.mp3\n# Deletes all .mp3 files in the Downloads folder."
-    )
+    system_message = """
+You are an expert Linux command-line assistant.
+Your task is to respond to user instructions with exactly **one** Linux shell command as the first line, followed optionally by a short explanation (starting with #) on the next line.
+
+Guidelines:
+- Always start your response with the shell command, without any text before it.
+- If you include an explanation, put it after the command on a **new line**, starting with `#`.
+- Never include backticks, markdown formatting, or extra commentary.
+- The command must be complete and directly runnable in a Linux terminal.
+
+Example 1:
+Input: delete all mp3 files from downloads  
+Output:  
+rm ~/Downloads/*.mp3  
+# Deletes all .mp3 files from the Downloads folder
+
+Example 2:
+Input: show the current directory  
+Output:  
+pwd  
+# Prints the current working directory
+
+Only respond in this strict format.
+""".strip()
 
     url = OLLAMA_API_URL
     payload = {
